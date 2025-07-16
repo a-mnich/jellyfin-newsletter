@@ -74,6 +74,7 @@ class Email:
         self.smtp_user = data["smtp_username"]
         self.smtp_password = data["smtp_password"]
         self.smtp_sender_email = data["smtp_sender_email"]
+        self.smtp_tls_type = data.get("smtp_tls_type") or "STARTTLS" # Fallback to STARTTLS if not specified
 
         
 

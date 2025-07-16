@@ -9,13 +9,18 @@ from time import sleep
 
 
 def send_email(html_content):
-    try:
-        smtp_server = smtplib.SMTP(configuration.conf.email.smtp_server, configuration.conf.email.smtp_port)
-        smtp_server.connect(configuration.conf.email.smtp_server, configuration.conf.email.smtp_port)
-        smtp_server.starttls()
+    try:      
+        tls_type = configuration.conf.email.smtp_tls_type.upper()
+        if tls_type == "TLS":
+            smtp_server = smtplib.SMTP_SSL(configuration.conf.email.smtp_server, configuration.conf.email.smtp_port)
+        else:
+            if tls_type != "STARTTLS":
+                logging.warning(f"No or unknown TLS type specified ('{tls_type}'), falling back to STARTTLS.")
+            smtp_server = smtplib.SMTP(configuration.conf.email.smtp_server, configuration.conf.email.smtp_port)
+            smtp_server.starttls()
         smtp_server.login(configuration.conf.email.smtp_user, configuration.conf.email.smtp_password)
     except Exception as e:
-        raise Exception(f"Error while connecting to the SMTP server. Got error : {e}")
+        raise Exception(f"Error while connecting to the SMTP server. Got error: {e}")
     
     for recipient in configuration.conf.recipients:
         msg = MIMEMultipart('alternative')
