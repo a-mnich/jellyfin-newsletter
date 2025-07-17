@@ -135,7 +135,8 @@ email:
     smtp_password: ""
     # Example: "jellyfin@example.com" or to set display username "Jellyfin <jellyfin@example.com>"
     smtp_sender_email: ""
-
+    # TLS Type for the SMTP connection
+    smtp_tls_type: "STARTTLS" # "STARTTLS" or "TLS" (implicit TLS)
 
 # List of users to send the newsletter to
 recipients:
@@ -231,7 +232,8 @@ email:
     smtp_password: ""
     # Example: "jellyfin@example.com" or to set display username "Jellyfin <jellyfin@example.com>"
     smtp_sender_email: ""
-
+    # TLS Type for the SMTP connection
+    smtp_tls_type: "STARTTLS" # "STARTTLS" or "TLS" (implicit TLS)
 
 # List of users to send the newsletter to
 recipients:
