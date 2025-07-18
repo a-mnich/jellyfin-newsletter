@@ -71,8 +71,11 @@ def check_email_configuration():
     # SMTP password
     assert isinstance(conf.email.smtp_password, str), "[FATAL] Invalid email SMTP password. The SMTP password must be a string. Please check the configuration."
     assert conf.email.smtp_password != '', "[FATAL] Invalid email SMTP password. The SMTP password cannot be empty. Please check the configuration."
-
-
+    
+    # SMTP TLS type
+    assert isinstance(conf.email.smtp_tls_type, str), "[FATAL] Invalid email SMTP TLS type. The SMTP TLS type must be a string. Please check the configuration."
+    assert conf.email.smtp_tls_type in ['STARTTLS', 'TLS'], "[FATAL] Invalid SMTP TLS type. The SMTP TLS type must be either 'STARTTLS' or 'TLS'. Please check the configuration."
+    
 def check_recipients_configuration():
     # Recipients
     assert isinstance(conf.recipients, list), "[FATAL] Invalid recipients configuration. The recipients must be a list. Please check the configuration."
