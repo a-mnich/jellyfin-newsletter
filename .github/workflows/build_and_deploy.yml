@@ -32,10 +32,6 @@ jobs:
             echo "CURRENT_VERSION=$(echo ${{ github.ref_name }} | sed 's/\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')" >> $GITHUB_ENV
             echo "CURRENT_SHORT_VERSION=$(echo ${{ github.ref_name }} | sed 's/\([0-9]*\.[0-9]*\).*$/\1/')" >> $GITHUB_ENV
 
-        - name: Extract current version 
-          id: vars 
-          run: 
-
         - name: Set up Qemu 
           uses: docker/setup-qemu-action@v3
 
