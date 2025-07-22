@@ -62,6 +62,9 @@ jobs:
               org.opencontainers.image.documentation=https://github.com/seaweedbraincy/jellyfin-newsletter#readme
               org.opencontainers.image.revision=${{ env.GIT_COMMIT }}
               org.opencontainers.image.created=${{ steps.meta.outputs.created }}
+            annotations: |
+              org.opencontainers.image.description=The development version of the Jellyfin Newsletter Docker image, used for testing and development purposes.
+              org.opencontainers.image.source=https://github.com/seaweedbraincy/jellyfin-newsletter
             cache-from: type=gha
             cache-to: type=gha,mode=max
             platforms: linux/amd64,linux/arm64,linux/arm/v7
