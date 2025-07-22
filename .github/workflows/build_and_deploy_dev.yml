@@ -42,7 +42,7 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
 
         - name: Build and push Docker images
-          uses: docker/build-push-action@v6
+          uses: docker
           with:
             context: .
             push: true
@@ -60,11 +60,10 @@ jobs:
               org.opencontainers.image.source=https://github.com/seaweedbraincy/jellyfin-newsletter
               org.opencontainers.image.licenses=MIT
               org.opencontainers.image.documentation=https://github.com/seaweedbraincy/jellyfin-newsletter#readme
-              org.opencontainers.image.revision=${{ env.GIT_COMMIT }}
-              org.opencontainers.image.created=${{ steps.meta.outputs.created }}
             annotations: |
               org.opencontainers.image.description=The development version of the Jellyfin Newsletter Docker image, used for testing and development purposes.
               org.opencontainers.image.source=https://github.com/seaweedbraincy/jellyfin-newsletter
             cache-from: type=gha
             cache-to: type=gha,mode=max
             platforms: linux/amd64,linux/arm64,linux/arm/v7
+            outputs: type=image,name=target,annotation-index.org.opencontainers.image.description="The development version of the Jellyfin Newsletter Docker image, used for testing and development purposes."
