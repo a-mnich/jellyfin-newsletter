@@ -24,7 +24,9 @@ jobs:
         
         - name: Extract Git commit
           id: vars
-          run: echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          run: |
+            echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+            echo "DATE=$(date)" >> $GITHUB_ENV
 
         - name: Set up Qemu 
           uses: docker/setup-qemu-action@v3
@@ -49,8 +51,17 @@ jobs:
               ghcr.io/${{ secrets.USERNAME }}/jellyfin-newsletter:${{ github.ref_name }}
             labels: |
               org.opencontainers.image.revision=${{ env.GIT_COMMIT }}
-              org.opencontainers.image.created=${{ steps.meta.outputs.created }}
+              org.opencontainers.image.created=${{ env.DATE }}
               org.opencontainers.image.version=${{ github.ref_name }}
+              org.opencontainers.image.title=Jellyfin Newsletter - Dev version
+              org.opencontainers.image.description=The development version of the Jellyfin Newsletter Docker image, used for testing and development purposes.
+              org.opencontainers.image.authors=SeaweedbrainCY <contact@seaweedbrain.xyz>
+              org.opencontainers.image.url=https://github.com/seaweedbraincy/jellyfin-newsletter
+              org.opencontainers.image.source=https://github.com/seaweedbraincy/jellyfin-newsletter
+              org.opencontainers.image.licenses=MIT
+              org.opencontainers.image.documentation=https://github.com/seaweedbraincy/jellyfin-newsletter#readme
+              org.opencontainers.image.revision=${{ env.GIT_COMMIT }}
+              org.opencontainers.image.created=${{ steps.meta.outputs.created }}
             cache-from: type=gha
             cache-to: type=gha,mode=max
             platforms: linux/amd64,linux/arm64,linux/arm/v7

@@ -1,15 +1,5 @@
 FROM python:3.12-slim
 
-LABEL org.opencontainers.image.title="Jellyfin Newsletter" \
-      org.opencontainers.image.description="A Dockerized newsletter service that connects to Jellyfin  API to notify your users of newly added media." \
-      org.opencontainers.image.authors="Seaweedbrain github.com/SeaweedbrainCY" \
-      org.opencontainers.image.url="https://github.com/seaweedbraincy/jellyfin-newsletter" \
-      org.opencontainers.image.source="https://github.com/seaweedbraincy/jellyfin-newsletter" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.documentation="https://github.com/seaweedbraincy/jellyfin-newsletter#readme" \
-      org.opencontainers.image.vendor="Seaweedbrain" \
-      org.opencontainers.image.base.name="python:3.12-slim"
-
 
 WORKDIR /app
 
