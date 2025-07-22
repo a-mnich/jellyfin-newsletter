@@ -24,7 +24,7 @@ jobs:
         
         - name: Extract Git commit
           id: vars
-           run: echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          run: echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
         - name: Set up Qemu 
           uses: docker/setup-qemu-action@v3
