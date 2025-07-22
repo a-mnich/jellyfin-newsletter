@@ -13,6 +13,7 @@ translation = {
         "added_on": "Added on",
         "episodes": "Episodes",
          "episode": "Episode",
+         "new_episodes": "new episodes",
     },
     "fr":{
         "discover_now": "Découvrir maintenant",
@@ -25,6 +26,7 @@ translation = {
         "added_on": "Ajouté le",
         "episodes": "Épisodes",
         "episode": "Épisode",
+        "new_episodes": "nouveaux épisodes",
     }
 }
 
@@ -110,6 +112,8 @@ def populate_email_template(movies, series, total_tv, total_movie) -> str:
                         added_items_str = f"{serie_data['seasons'][0]}, {translation[configuration.conf.email_template.language]['episode']} {serie_data['episodes'][0]}"
                     else:
                         episodes_ranges = utils.summarize_ranges(serie_data["episodes"])
+                        if episodes_ranges is None:
+                            added_items_str = f"{serie_data['seasons'][0]}, {translation[configuration.conf.email_template.language]['new_episodes']}."
                         if len(episodes_ranges) == 1:
                             added_items_str = f"{serie_data['seasons'][0]}, {translation[configuration.conf.email_template.language]['episodes']} {episodes_ranges[0]}"
                         else:

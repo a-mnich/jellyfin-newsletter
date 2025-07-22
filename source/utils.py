@@ -6,7 +6,11 @@ def summarize_ranges(nums):
     if not nums:
         return []
     # convert all elements to integers
-    nums = list(map(int, nums))
+    try:
+        nums = list(map(int, nums))
+    except Exception as e:
+        logging.error(f"Error while checking episodes for a show. Episodes list will not be displayed in the final email due to this error : {e}")
+        return None
     nums = sorted(nums)
     result = []
     start = nums[0]
