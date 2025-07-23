@@ -51,7 +51,7 @@ jobs:
             context: .
             push: true
             tags: |
-              ghcr.io/${{ secrets.USERNAME }}/jellyfin-newsletter:dev
+              ghcr.io/${{ secrets.USERNAME }}/jellyfin-newsletter:latest
               ghcr.io/${{ secrets.USERNAME }}/jellyfin-newsletter:${{ env.CURRENT_VERSION }}
               ghcr.io/${{ secrets.USERNAME }}/jellyfin-newsletter:${{ env.CURRENT_SHORT_VERSION }}
             labels: |
@@ -73,3 +73,4 @@ jobs:
             cache-from: type=gha
             cache-to: type=gha,mode=max
             platforms: linux/amd64,linux/arm64,linux/arm/v7
+            outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=A Dockerized newsletter service that connects to Jellyfin API to notify your users of newly added media.
