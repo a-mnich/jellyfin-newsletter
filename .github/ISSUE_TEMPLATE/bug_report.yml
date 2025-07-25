@@ -1,0 +1,94 @@
+name: 🐛 Bug report
+description: Report something that's broken or not working as expected
+title: "[Bug] "
+labels: [bug, "needs confirmation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👋 Hello, thanks for reporting a bug!
+
+        Before you start, please make sure to:
+        - 🔍 Search **open and closed issues**
+        - 💬 Check [Discussions](https://github.com/seaweedbraincy/jellyfin-newsletter/discussions)
+        - 📚 Read the [documentation](https://github.com/seaweedbraincy/jellyfin-newsletter#readme)
+
+        If it seems like a new bug, go ahead! Fill out the form below 👇
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: 🚀 Deployment method
+      description: How did you deploy Jellyfin Newsletter?
+      options:
+        - Unraid (docker via App Store)
+        - Docker Compose
+        - Docker (CLI)
+        - Kubernetes
+        - Other (please specify in the logs/comments)
+      multiple: false
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 📦 Jellyfin Newsletter version
+      placeholder: e.g. v0.7.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: jellyfin-version
+    attributes:
+      label: 🎬 Jellyfin server version
+      options:
+        - 10.9.x
+        - 10.8.x
+        - 10.7.x or older
+        - I’m not sure
+      multiple: false
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Bug description
+      description: Tell us what went wrong.
+      placeholder: |
+        Example: Emails are not sending. I’m getting a 500 error in the logs when trying to trigger a campaign...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📄 Logs or error output
+      description: Paste any relevant logs or error messages here.
+      placeholder: |
+        [2025-07-25 19:30:22] ERROR: Failed to fetch users from Jellyfin...
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: ✅ Checklist
+      options:
+        - label: I’ve searched **open and closed issues** for a duplicate
+          required: true
+        - label: I’ve checked the [Discussions tab](https://github.com/seaweedbraincy/jellyfin-newsletter/discussions)
+        - label: I’m using the **latest version** of Jellyfin Newsletter
+          required: true
+        - label: I’ve read the documentation and setup instructions
+        - label: I’ve reviewed logs or console errors before reporting
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        💙 Thanks for helping make Jellyfin Newsletter better!
+
+        If you’re a developer and want to fix it yourself, feel free to open a PR 🙌  
+        Otherwise, we’ll try to look into this as soon as possible.
