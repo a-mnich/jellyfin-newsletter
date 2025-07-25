@@ -1,0 +1,103 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for this project
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the newsletter is this about?
+      options:
+        - Script improvements 
+        - Newsletter UI
+        - Information gathering
+        - Customization
+        - Other
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: Before submitting, please search existing [issues](https://github.com/SeaweedbrainCY/jellyfin-newsletter/issues) and [discussions](https://github.com/SeaweedbrainCY/jellyfin-newsletter/discussions) (including closed).
+  - type: markdown
+    attributes:
+      value: |
+        ## 🌟 Thank you for contributing!
+        Please fill out this form to help us understand your feature request better.
+        
+        ---
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: 🎯 Feature Summary
+      description: A clear and concise description of the feature you'd like to see
+      placeholder: "Brief description of the feature..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem-relation
+    attributes:
+      label: 🔍 Problem Relation
+      description: Is your feature request related to a problem?
+      options:
+        - "Yes, it solves a frustrating problem"
+        - "No, it's a general improvement"
+        - "Partially, it optimizes an existing process"
+        - "Not applicable"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ⚙️ Expected Behavior
+      description: How should this feature work?
+      placeholder: "Step-by-step description of the expected behavior..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 📋 Acceptance Criteria
+      description: List the conditions that must be met for this feature to be considered complete
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🏷️ Priority Level
+      description: How important is this feature?
+      options:
+        - "🔴 Critical (blocks workflow)"
+        - "🟠 High (significant improvement)"
+        - "🟡 Medium (nice-to-have)"
+        - "🟢 Low (future enhancement)"
+    validations:
+      required: true
+
+
+  - type: checkboxes
+    id: feature-type
+    attributes:
+      label: 🎨 Feature Type
+      description: What type of feature is this? (Select all that apply)
+      options:
+        - label: "🖥️ User Interface enhancement"
+        - label: "⚡ Performance improvement"
+        - label: "🔧 Developer experience"
+        - label: "📱 Mobile/responsive feature"
+        - label: "🔐 Security enhancement"
+        - label: "🌐 API/Integration feature"
+        - label: "📊 Analytics/reporting"
+        - label: "♿ Accessibility improvement"
+        - label: "🎯 Core functionality"
+        - label: "🔄 Workflow optimization"
