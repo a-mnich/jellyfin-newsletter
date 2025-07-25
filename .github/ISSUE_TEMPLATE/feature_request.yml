@@ -10,9 +10,9 @@ body:
       label: Component
       description: Which part of the newsletter is this about?
       options:
+        - Script improvements 
         - Newsletter UI
-        - Script
-        - Displayed information
+        - Information gathering
         - Customization
         - Other
     validations:
