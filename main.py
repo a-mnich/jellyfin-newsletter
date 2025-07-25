@@ -27,7 +27,7 @@ def populate_series_item_from_episode(series_items, item):
 
     
     if "SeriesName" not in item.keys():
-        logging.warning(f"Item {item['Name']} has no SeriesName. Skipping.")
+        logging.warning(f"Item {item} has no SeriesName. Skipping.")
         return
     if item["SeriesName"] not in series_items.keys():
         series_items[item["SeriesName"]] = {
@@ -59,6 +59,9 @@ def populate_series_item_with_series_related_information(series_items, watched_t
         for serie_name in series_items.keys():
             item = JellyfinAPI.get_item_from_parent_by_name(parent_id=folder_id, name=serie_name)
             if item is not None:
+                if "Name" not in item.keys():
+                    logging.warning(f"Item {item} has no Name. Skipping.")
+                    continue
                 series_items[item['Name']]["year"] = item["ProductionYear"]
                 tmdb_id = None
                 if "ProviderIds" in item.keys():
@@ -92,6 +95,9 @@ def send_newsletter():
     watched_film_folders_id = []
     watched_tv_folders_id = []
     for item in folders:
+        if "Name" not in item:
+            logging.warning(f"Item {item} has no Name. Skipping.")
+            continue
         if item["Name"] in configuration.conf.jellyfin.watched_film_folders :
            watched_film_folders_id.append(item["Id"])
            logging.info(f"Folder {item['Name']} is watched for films.")
@@ -111,6 +117,9 @@ def send_newsletter():
         items, total_count = JellyfinAPI.get_item_from_parent(parent_id=folder_id,type="movie", minimum_creation_date=dt.datetime.now() - dt.timedelta(days=configuration.conf.jellyfin.observed_period_days))
         total_movie += total_count
         for item in items:
+            if "Name" not in item: # Jellyfin API sometimes returns items without Name
+                logging.warning(f"Item {item} has no Name. Skipping.")
+                continue
             tmdb_id = None
             if "ProductionYear"  not in item.keys():
                 logging.warning(f"Item {item['Name']} has no production year.")

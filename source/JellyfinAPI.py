@@ -34,7 +34,7 @@ def get_item_from_parent(parent_id, type, minimum_creation_date=None):
         for item in response.json()["Items"]:
             if (item.get("Type") == "Episode" and item.get("LocationType") == "Virtual") or (item.get("Type") == "Movie" and item.get("LocationType") == "Virtual"):
                 # see https://github.com/SeaweedbrainCY/jellyfin-newsletter/issues/28 for context
-                logging.debug(f"Skipping item {item['Name']} because it is a virtual item. Item : {item}")
+                logging.debug(f"Skipping item because it is a virtual item. Item : {item}")
                 continue
             creation_date = dt.datetime.strptime(item["DateCreated"].split("T")[0], "%Y-%m-%d")
             if creation_date > minimum_creation_date:
