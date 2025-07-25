@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Support and questions
+    url: https://github.com/SeaweedbrainCY/jellyfin-newsletter/discussions
+    about: Ask and answer questions here.
+  - name: ℹ️ Current known issues
+    url: https://github.com/SeaweedbrainCY/jellyfin-newsletter/issues
+    about: Find information about currently known problems.
