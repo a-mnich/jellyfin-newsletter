@@ -21,8 +21,8 @@ body:
       label: 🚀 Deployment method
       description: How did you deploy Jellyfin Newsletter?
       options:
-        - Unraid (docker via App Store)
         - Docker Compose
+        - Unraid (docker via App Store)
         - Docker (CLI)
         - Kubernetes
         - Other (please specify in the logs/comments)
@@ -38,16 +38,11 @@ body:
     validations:
       required: true
 
-  - type: dropdown
+  - type: input
     id: jellyfin-version
     attributes:
       label: 🎬 Jellyfin server version
-      options:
-        - 10.9.x
-        - 10.8.x
-        - 10.7.x or older
-        - I’m not sure
-      multiple: false
+      placeholder: e.g. 10.11.0
     validations:
       required: true
 
