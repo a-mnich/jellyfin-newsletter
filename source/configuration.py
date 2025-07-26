@@ -38,6 +38,7 @@ class Jellyfin:
         self.watched_film_folders = data["watched_film_folders"]
         self.watched_tv_folders = data["watched_tv_folders"]
         self.observed_period_days = data["observed_period_days"]
+        self.ignore_item_added_before_last_newsletter = data["ignore_item_added_before_last_newsletter"] if "ignore_item_added_before_last_newsletter" in data else False
 
 class Tmdb:
     required_keys = ["api_key"]
