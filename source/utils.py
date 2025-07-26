@@ -1,3 +1,7 @@
+import datetime as dt
+from configuration import logging
+
+
 def summarize_ranges(nums):
     """
     Summarizes a list of integers into ranges.
@@ -32,3 +36,28 @@ def summarize_ranges(nums):
         result.append(f"{start}-{end}")
 
     return result
+
+
+def get_last_newsletter_date():
+    """
+    Returns the date of the last newsletter.
+    If the file does not exist, it returns None.
+    """
+    try:
+        with open("./config/LAST_NEWSLETTER.txt", "r") as f:
+            date_str = f.read().strip()
+        try:
+            return dt.datetime.fromisoformat(date_str)
+        except ValueError:
+            logging.error(f"Error while parsing the date from LAST_NEWSLETTER.txt. Expected ISO format, got: {date_str}. It is highly recommended to delete this file and let the program create a new one.")
+            return None
+    except FileNotFoundError:
+        return None
+
+def save_last_newsletter_date(date):
+    """
+    Saves the date of the last newsletter to a file.
+    The date should be a datetime object.
+    """
+    with open("./config/LAST_NEWSLETTER.txt", "w") as f:
+        f.write(date.isoformat())
