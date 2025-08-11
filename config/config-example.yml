@@ -58,7 +58,7 @@ email_template:
     # Default: 10
     # Always show summaries : set to 0
     # Always hide summaries : set to -1
-    #max_items_to_display_summaries: 10
+    #display_overview_max_items: 10
 
 # SMTP server configuration, TLS is required for now
 # Check your email provider for more information

@@ -32,15 +32,15 @@ translation = {
 
 def populate_email_template(movies, series, total_tv, total_movie) -> str:
     include_overview = True
-    if configuration.conf.email_template.max_items_to_display_summaries == -1:
+    if configuration.conf.email_template.display_overview_max_items == -1:
         include_overview = False
-        configuration.logging.debug("max_items_to_display_summaries is -1, overviews will not be included in the email template.")
-    elif configuration.conf.email_template.max_items_to_display_summaries == 0:
+        configuration.logging.debug("display_overview_max_items is -1, overviews will not be included in the email template.")
+    elif configuration.conf.email_template.display_overview_max_items == 0:
         include_overview = True
-        configuration.logging.debug("max_items_to_display_summaries is 0, overviews will  be included in the email template, no matter their number.")
-    elif len(movies) + len(series) > configuration.conf.email_template.max_items_to_display_summaries :
+        configuration.logging.debug("display_overview_max_items is 0, overviews will  be included in the email template, no matter their number.")
+    elif len(movies) + len(series) > configuration.conf.email_template.display_overview_max_items :
         include_overview = False
-        configuration.logging.info(f"There are more than {configuration.conf.email_template.max_items_to_display_summaries} new items, overview will not be included in the email template to avoid too much content.")
+        configuration.logging.info(f"There are more than {configuration.conf.email_template.display_overview_max_items} new items, overview will not be included in the email template to avoid too much content.")
     with open("./template/new_media_notification.html") as template_file:
         template = template_file.read()
         
