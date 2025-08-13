@@ -63,6 +63,9 @@ def populate_series_item_with_series_related_information(series_items, watched_t
                 if "Name" not in item.keys():
                     logging.warning(f"Item {item} has no Name. Skipping.")
                     continue
+                elif "SeriesName" not in item.keys():
+                    logging.warning(f"Item {item} has no SeriesName. Skipping.")
+                    continue
                 series_items[item['Name']]["year"] = item["ProductionYear"]
                 tmdb_id = None
                 if "ProviderIds" in item.keys():
