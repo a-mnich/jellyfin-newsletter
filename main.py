@@ -126,9 +126,11 @@ def send_newsletter():
         items, total_count = JellyfinAPI.get_item_from_parent(parent_id=folder_id,type="movie", minimum_creation_date=dt.datetime.now() - dt.timedelta(days=configuration.conf.jellyfin.observed_period_days))
         total_movie += total_count
         for item in items:
-            if "Name" not in item: # Jellyfin API sometimes returns items without Name
-                logging.warning(f"Item {item} has no Name. Skipping.")
-                continue
+            required_keys = ["Name", "Id", "DateCreated"]
+            for key in required_keys:
+                if key not in item.keys():
+                    logging.warning(f"Item {item} has no {key}. Skipping.")
+                    continue
             if configuration.conf.jellyfin.ignore_item_added_before_last_newsletter:
                 last_newsletter_date = utils.get_last_newsletter_date()
                 if last_newsletter_date is not None:
@@ -160,7 +162,8 @@ def send_newsletter():
                     logging.warning(f"Item {item['Name']} has no overview.")
                     tmdb_info["overview"] = "No overview available."
 
-                movie_items[item["Name"]] = {
+                movie_items[item["Id"]] = {
+                    "name": item["Name"],
                     "year":item["ProductionYear"],
                     "created_on":item["DateCreated"],
                     "description": tmdb_info["overview"],
