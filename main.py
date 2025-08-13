@@ -5,6 +5,7 @@ from source.configuration import logging
 from source.configuration_checker import check_configuration
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+import source.utils as utils
 
 
 def populate_series_item_from_episode(series_items, item):
@@ -120,6 +121,12 @@ def send_newsletter():
             if "Name" not in item: # Jellyfin API sometimes returns items without Name
                 logging.warning(f"Item {item} has no Name. Skipping.")
                 continue
+            if configuration.conf.jellyfin.ignore_item_added_before_last_newsletter:
+                last_newsletter_date = utils.get_last_newsletter_date()
+                if last_newsletter_date is not None:
+                    if item["DateCreated"] is not None and dt.datetime.strptime(item["DateCreated"].split("T")[0], "%Y-%m-%d") < last_newsletter_date:
+                        logging.info(f"ignore_item_added_before_last_newsletter is set to True and Item {item['Name']} was added before the last newsletter. Ignoring.")
+                        continue
             tmdb_id = None
             if "ProductionYear"  not in item.keys():
                 logging.warning(f"Item {item['Name']} has no production year.")
@@ -157,6 +164,12 @@ def send_newsletter():
         items, total_count = JellyfinAPI.get_item_from_parent(parent_id=folder_id, type="tv", minimum_creation_date=dt.datetime.now() - dt.timedelta(days=configuration.conf.jellyfin.observed_period_days))
         total_tv += total_count
         for item in items:
+            if configuration.conf.jellyfin.ignore_item_added_before_last_newsletter:
+                last_newsletter_date = utils.get_last_newsletter_date()
+                if last_newsletter_date is not None:
+                    if item["DateCreated"] is not None and dt.datetime.strptime(item["DateCreated"].split("T")[0], "%Y-%m-%d") < last_newsletter_date:
+                        logging.info(f"ignore_item_added_before_last_newsletter is set to True and Item {item.get('Name')} was added before the last newsletter. Ignoring.")
+                        continue
             if item["Type"] == "Episode":
                 populate_series_item_from_episode(series_items, item)
     

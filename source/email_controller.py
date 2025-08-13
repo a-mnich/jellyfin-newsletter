@@ -5,6 +5,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from source.configuration import logging
 from time import sleep
+from source.utils import save_last_newsletter_date
+import datetime as dt
 
 
 
@@ -34,4 +36,6 @@ def send_email(html_content):
         logging.info(f"Email sent to {recipient}")
         sleep(2)
     smtp_server.quit()
+    save_last_newsletter_date(dt.datetime.now())
+
     

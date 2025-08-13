@@ -23,6 +23,9 @@ def check_jellyfin_configuration():
     # observed_period_days
     assert isinstance(conf.jellyfin.observed_period_days, int), "[FATAL] Invalid observed period days. The observed period days must be an integer. Please check the configuration."
 
+    # ignore_item_added_before_last_newsletter
+    assert isinstance(conf.jellyfin.ignore_item_added_before_last_newsletter, bool), "[FATAL] Invalid ignore_item_added_before_last_newsletter. The ignore_item_added_before_last_newsletter must be a boolean. Please check the configuration."
+
 
 
 def check_tmdb_configuration():

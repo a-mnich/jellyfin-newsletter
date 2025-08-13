@@ -100,6 +100,11 @@ jellyfin:
   # Number of days to look back for new items
   observed_period_days: 30
 
+  # (Optional, default: false)
+  # If true, the newsletter will ignore items that were added before the last newsletter was sent, even if they were added during the observed period.
+  # This is useful if you want to avoid sending the same items multiple times.
+  #ignore_item_added_before_last_newsletter: false
+
 tmdb:
     # TMDB API key, see requirements for more info
     api_key: ""
@@ -196,6 +201,11 @@ jellyfin:
   
   # Number of days to look back for new items
   observed_period_days: 30
+
+  # (Optional, default: false)
+  # If true, the newsletter will ignore items that were added before the last newsletter was sent, even if they were added during the observed period.
+  # This is useful if you want to avoid sending the same items multiple times.
+  #ignore_item_added_before_last_newsletter: false
 
 tmdb:
     # TMDB API key, see requirements for more info
