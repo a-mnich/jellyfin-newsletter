@@ -105,7 +105,7 @@ def populate_email_template(movies, series, total_tv, total_movie) -> str:
             template = re.sub(r"\${display_tv}", "", template)
             series_html = ""
             
-            for serie_title, serie_data in series.items():
+            for serie_id, serie_data in series.items():
                 added_date = serie_data["created_on"].split("T")[0]
                 if len(serie_data["seasons"]) == 1 :
                     if len(serie_data["episodes"]) == 1:
@@ -135,11 +135,11 @@ def populate_email_template(movies, series, total_tv, total_movie) -> str:
                         <table class="movie" width="100%" role="presentation" cellpadding="0" cellspacing="0" style="background: rgba(0, 0, 0, 0.7); border-radius: 10px; width: 100%;">
                             <tr>
                                 <td class="movie-image" valign="middle" style="padding: 15px; text-align: center; width: 120px;">
-                                    <img src="{serie_data['poster']}" alt="{serie_title}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                    <img src="{serie_data['poster']}" alt="{serie_data['series_name']}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
                                 </td>
                                 <td class="movie-content-cell" valign="middle" style="padding: 15px;">
                                     <div class="mobile-text-container">
-                                        <h3 class="movie-title" style="color: #ffffff !important; margin: 0 0 5px !important; font-size: 18px !important;">{serie_title}: {added_items_str}</h3>
+                                        <h3 class="movie-title" style="color: #ffffff !important; margin: 0 0 5px !important; font-size: 18px !important;">{serie_data['series_name']}: {added_items_str}</h3>
                                         <div class="movie-date" style="color: #dddddd !important; font-size: 14px !important; margin: 0 0 10px !important;">
                                             {translation[configuration.conf.email_template.language]['added_on']} {added_date}
                                         </div>
