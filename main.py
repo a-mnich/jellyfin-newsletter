@@ -27,12 +27,13 @@ def populate_series_item_from_episode(series_items, item):
     """
 
 
-    
-    if "SeriesName" not in item.keys():
-        logging.warning(f"Item {item} has no SeriesName. Skipping.")
-        return
-    if item["Id"] not in series_items.keys():
-        series_items[item["Id"]] = {
+    required_keys = ["SeriesId", "SeriesName", "SeasonName"]
+    for key in required_keys:
+        if key not in item.keys():
+            logging.warning(f"Item {item} has no {key}. Skipping.")
+            return
+    if item["SeriesId"] not in series_items.keys():
+        series_items[item["SeriesId"]] = {
             "series_name": item["SeriesName"],  # Name of the series, provided by Jellyfin
             "episodes": [],
             "seasons": [],
@@ -41,16 +42,16 @@ def populate_series_item_from_episode(series_items, item):
             "year": "undefined",# will be populated later, when parsing the series item
             "poster": "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png"# will be populated later, when parsing the series item
         }
-    if item["SeasonName"] not in series_items[item["Id"]]["seasons"]:
-        series_items[item["Id"]]["seasons"].append(item["SeasonName"])
-    series_items[item["Id"]]["episodes"].append(item.get('IndexNumber'))
-    if series_items[item["Id"]]["created_on"] != "undefined" or series_items[item["Id"]]["created_on"] is not None:
+    if item["SeasonName"] not in series_items[item["SeriesId"]]["seasons"]:
+        series_items[item["SeriesId"]]["seasons"].append(item["SeasonName"])
+    series_items[item["SeriesId"]]["episodes"].append(item.get('IndexNumber'))
+    if series_items[item["SeriesId"]]["created_on"] != "undefined" or series_items[item["SeriesId"]]["created_on"] is not None:
         try: 
-            if dt.datetime.fromisoformat(series_items[item["Id"]]["created_on"]) < dt.datetime.fromisoformat(item["DateCreated"]):
-                series_items[item["Id"]]["created_on"] = item["DateCreated"]
+            if dt.datetime.fromisoformat(series_items[item["SeriesId"]]["created_on"]) < dt.datetime.fromisoformat(item["DateCreated"]):
+                series_items[item["SeriesId"]]["created_on"] = item["DateCreated"]
         except:
             pass
-    series_items[item["Id"]]["created_on"] = item.get("DateCreated", "undefined") 
+    series_items[item["SeriesId"]]["created_on"] = item.get("DateCreated", "undefined") 
 
 
 def populate_series_item_with_series_related_information(series_items, watched_tv_folders_id):
@@ -62,15 +63,14 @@ def populate_series_item_with_series_related_information(series_items, watched_t
         for series_id in series_items.keys():
             item = JellyfinAPI.get_item_from_parent_by_id(parent_id=folder_id, item_id=series_id)
             if item is not None:
-                if "Name" not in item.keys():
-                    logging.warning(f"Item {item} has no Name. Skipping.")
+                if "Type" not in item.keys() or item["Type"] != "Series":
+                    logging.warning(f"Item {item} is not a series. Skipping.")
                     continue
-                elif "SeriesName" not in item.keys():
-                    logging.warning(f"Item {item} has no SeriesName. Skipping.")
-                    continue
-                elif "Id" not in item.keys():
-                    logging.warning(f"Item {item} has no Id. Skipping.")
-                    continue
+                required_keys = ["Name", "Id"]
+                for key in required_keys:
+                    if key not in item.keys():
+                        logging.warning(f"Item {item} has no {key}. Skipping.")
+                        continue
                 series_items[item['Id']]["year"] = item["ProductionYear"]
                 tmdb_id = None
                 if "ProviderIds" in item.keys():
@@ -81,13 +81,13 @@ def populate_series_item_with_series_related_information(series_items, watched_t
                     tmdb_info = TmdbAPI.get_media_detail_from_id(id=tmdb_id, type="tv")
                 else:
                     logging.info(f"Item {item} has no TMDB id, searching by title.")
-                    tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["SeriesName"], type="tv", year=item["ProductionYear"])
+                    tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["Name"], type="tv", year=item["ProductionYear"])
                 
                 if tmdb_info is None:
-                    logging.warning(f"Item {item['SeriesName']} has not been found on TMDB. Skipping.")
+                    logging.warning(f"Item {item['Name']} has not been found on TMDB. Skipping.")
                 else:
                     if "overview" not in tmdb_info.keys():
-                        logging.warning(f"Item {item['SeriesName']} has no overview.")
+                        logging.warning(f"Item {item['Name']} has no overview.")
                         tmdb_info["Overview"] = "No overview available."
                     series_items[item['Id']]["description"] = tmdb_info["overview"]
                     
