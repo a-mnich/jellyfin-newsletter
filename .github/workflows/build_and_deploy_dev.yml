@@ -28,6 +28,9 @@ jobs:
             echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
             echo "DATE=$(date)" >> $GITHUB_ENV
 
+        - name: Set up Version file
+          run: echo ${{ github.ref_name }} > VERSION
+
         - name: Set up Qemu 
           uses: docker/setup-qemu-action@v3
 
