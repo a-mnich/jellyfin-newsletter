@@ -223,9 +223,16 @@ def newsletter_job():
 
 
 if __name__ == "__main__":
-    logging.info("""
+    current_version = ""
+    try:
+        with open("VERSION", "r") as version_file:
+            current_version = version_file.read().strip()
+    except :
+       current_version = "unknown version"        
+        
+    logging.info(f"""
 
-Jellyfin Newsletter is starting ....
+Jellyfin Newsletter {current_version} is starting ....
 ##############################################
 
 
