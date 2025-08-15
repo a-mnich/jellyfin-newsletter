@@ -68,6 +68,7 @@ mkdir config
 ```
 curl -o config/config.yml https://raw.githubusercontent.com/SeaweedbrainCY/jellyfin-newsletter/refs/heads/main/config/config-example.yml
 ```
+
 5. Edit the `config/config.yml` file and fill in the required fields. **All non-commented fields are required.**
 
 6. Run the docker container with docker compose 
@@ -91,7 +92,9 @@ mkdir config
 ```
 curl -o config/config.yml https://raw.githubusercontent.com/SeaweedbrainCY/jellyfin-newsletter/refs/heads/main/config/config-example.yml
 ```
+
 2. Edit the `config/config.yml` file and fill in the required fields. **All non-commented fields are required.**
+
 
 3. Run the docker container to send the newsletter
 ```bash

@@ -38,6 +38,7 @@ class Jellyfin:
         self.watched_film_folders = data["watched_film_folders"]
         self.watched_tv_folders = data["watched_tv_folders"]
         self.observed_period_days = data["observed_period_days"]
+        self.ignore_item_added_before_last_newsletter = data["ignore_item_added_before_last_newsletter"] if "ignore_item_added_before_last_newsletter" in data else False
 
 class Tmdb:
     required_keys = ["api_key"]
@@ -89,11 +90,11 @@ class Config:
 
         if "debug" in data: 
             if data["debug"]:
-                logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+                logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(filename)s->%(funcName)s():%(lineno)s - %(levelname)s - %(message)s')
             else:
-                logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+                logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s->%(funcName)s():%(lineno)s - %(levelname)s - %(message)s')
         else: 
-            logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+            logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s->%(funcName)s():%(lineno)s - %(levelname)s - %(message)s')
     
         self.jellyfin = Jellyfin(data["jellyfin"])
         self.tmdb = Tmdb(data["tmdb"])

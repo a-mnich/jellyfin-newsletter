@@ -5,6 +5,7 @@ from source.configuration import logging
 from source.configuration_checker import check_configuration
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+import source.utils as utils
 
 
 def populate_series_item_from_episode(series_items, item):
@@ -13,7 +14,8 @@ def populate_series_item_from_episode(series_items, item):
     It takes an episode, populate the serie item with the episode information, and add the episode to the series item.
     series_items format : 
     {
-        "SeriesName": {
+        "id": {
+            "series_name": "SeriesName", # Name of the series, provided by Jellyfin
             "created_on": "2023-10-01T12:00:00Z", # Creation date of the series item, i.e. of added season or the added episode, or the series itfself
             "description": "This is a series description.", # Since episode rarely includes TMBD id, even if the episode is alone, we will use the series description.
             "year": 2023, # Production year of the series, provided by Jellyfin
@@ -25,12 +27,14 @@ def populate_series_item_from_episode(series_items, item):
     """
 
 
-    
-    if "SeriesName" not in item.keys():
-        logging.warning(f"Item {item} has no SeriesName. Skipping.")
-        return
-    if item["SeriesName"] not in series_items.keys():
-        series_items[item["SeriesName"]] = {
+    required_keys = ["SeriesId", "SeriesName", "SeasonName"]
+    for key in required_keys:
+        if key not in item.keys():
+            logging.warning(f"Item {item} has no {key}. Skipping.")
+            return
+    if item["SeriesId"] not in series_items.keys():
+        series_items[item["SeriesId"]] = {
+            "series_name": item["SeriesName"],  # Name of the series, provided by Jellyfin
             "episodes": [],
             "seasons": [],
             "created_on": "undefined",
@@ -38,16 +42,16 @@ def populate_series_item_from_episode(series_items, item):
             "year": "undefined",# will be populated later, when parsing the series item
             "poster": "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png"# will be populated later, when parsing the series item
         }
-    if item["SeasonName"] not in series_items[item["SeriesName"]]["seasons"]:
-        series_items[item["SeriesName"]]["seasons"].append(item["SeasonName"])
-    series_items[item["SeriesName"]]["episodes"].append(item.get('IndexNumber'))
-    if series_items[item["SeriesName"]]["created_on"] != "undefined" or series_items[item["SeriesName"]]["created_on"] is not None:
+    if item["SeasonName"] not in series_items[item["SeriesId"]]["seasons"]:
+        series_items[item["SeriesId"]]["seasons"].append(item["SeasonName"])
+    series_items[item["SeriesId"]]["episodes"].append(item.get('IndexNumber'))
+    if series_items[item["SeriesId"]]["created_on"] != "undefined" or series_items[item["SeriesId"]]["created_on"] is not None:
         try: 
-            if dt.datetime.fromisoformat(series_items[item["SeriesName"]]["created_on"]) < dt.datetime.fromisoformat(item["DateCreated"]):
-                series_items[item["SeriesName"]]["created_on"] = item["DateCreated"]
+            if dt.datetime.fromisoformat(series_items[item["SeriesId"]]["created_on"]) < dt.datetime.fromisoformat(item["DateCreated"]):
+                series_items[item["SeriesId"]]["created_on"] = item["DateCreated"]
         except:
             pass
-    series_items[item["SeriesName"]]["created_on"] = item.get("DateCreated", "undefined") 
+    series_items[item["SeriesId"]]["created_on"] = item.get("DateCreated", "undefined") 
 
 
 def populate_series_item_with_series_related_information(series_items, watched_tv_folders_id):
@@ -56,13 +60,18 @@ def populate_series_item_with_series_related_information(series_items, watched_t
     This function will populate the series item with the series information.
     """
     for folder_id in watched_tv_folders_id:
-        for serie_name in series_items.keys():
-            item = JellyfinAPI.get_item_from_parent_by_name(parent_id=folder_id, name=serie_name)
+        for series_id in series_items.keys():
+            item = JellyfinAPI.get_item_from_parent_by_id(parent_id=folder_id, item_id=series_id)
             if item is not None:
-                if "Name" not in item.keys():
-                    logging.warning(f"Item {item} has no Name. Skipping.")
+                if "Type" not in item.keys() or item["Type"] != "Series":
+                    logging.warning(f"Item {item} is not a series. Skipping.")
                     continue
-                series_items[item['Name']]["year"] = item["ProductionYear"]
+                required_keys = ["Name", "Id"]
+                for key in required_keys:
+                    if key not in item.keys():
+                        logging.warning(f"Item {item} has no {key}. Skipping.")
+                        continue
+                series_items[item['Id']]["year"] = item["ProductionYear"]
                 tmdb_id = None
                 if "ProviderIds" in item.keys():
                     if "Tmdb" in item["ProviderIds"].keys():
@@ -71,20 +80,20 @@ def populate_series_item_with_series_related_information(series_items, watched_t
                 if tmdb_id is not None: # id provided by Jellyfin
                     tmdb_info = TmdbAPI.get_media_detail_from_id(id=tmdb_id, type="tv")
                 else:
-                    logging.info(f"Item {item['SeriesName']} has no TMDB id, searching by title.")
-                    tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["SeriesName"], type="tv", year=item["ProductionYear"])
+                    logging.info(f"Item {item} has no TMDB id, searching by title.")
+                    tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["Name"], type="tv", year=item["ProductionYear"])
                 
                 if tmdb_info is None:
                     logging.warning(f"Item {item['Name']} has not been found on TMDB. Skipping.")
                 else:
                     if "overview" not in tmdb_info.keys():
-                        logging.warning(f"Item {item['SeriesName']} has no overview.")
+                        logging.warning(f"Item {item['Name']} has no overview.")
                         tmdb_info["Overview"] = "No overview available."
-                    series_items[item['Name']]["description"] = tmdb_info["overview"]
+                    series_items[item['Id']]["description"] = tmdb_info["overview"]
                     
-                    series_items[item['Name']]["poster"] = f"https://image.tmdb.org/t/p/w500{tmdb_info['poster_path']}" if tmdb_info["poster_path"] else "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png"
+                    series_items[item['Id']]["poster"] = f"https://image.tmdb.org/t/p/w500{tmdb_info['poster_path']}" if tmdb_info["poster_path"] else "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png"
             else:
-                logging.warning(f"Item {serie_name} has not been found in Jellyfin. Skipping.")
+                logging.warning(f"Item {series_id} has not been found in Jellyfin. Skipping.")
 
     
 
@@ -117,9 +126,17 @@ def send_newsletter():
         items, total_count = JellyfinAPI.get_item_from_parent(parent_id=folder_id,type="movie", minimum_creation_date=dt.datetime.now() - dt.timedelta(days=configuration.conf.jellyfin.observed_period_days))
         total_movie += total_count
         for item in items:
-            if "Name" not in item: # Jellyfin API sometimes returns items without Name
-                logging.warning(f"Item {item} has no Name. Skipping.")
-                continue
+            required_keys = ["Name", "Id", "DateCreated"]
+            for key in required_keys:
+                if key not in item.keys():
+                    logging.warning(f"Item {item} has no {key}. Skipping.")
+                    continue
+            if configuration.conf.jellyfin.ignore_item_added_before_last_newsletter:
+                last_newsletter_date = utils.get_last_newsletter_date()
+                if last_newsletter_date is not None:
+                    if item["DateCreated"] is not None and dt.datetime.strptime(item["DateCreated"].split("T")[0], "%Y-%m-%d") < last_newsletter_date:
+                        logging.info(f"ignore_item_added_before_last_newsletter is set to True and Item {item['Name']} was added before the last newsletter. Ignoring.")
+                        continue
             tmdb_id = None
             if "ProductionYear"  not in item.keys():
                 logging.warning(f"Item {item['Name']} has no production year.")
@@ -145,7 +162,8 @@ def send_newsletter():
                     logging.warning(f"Item {item['Name']} has no overview.")
                     tmdb_info["overview"] = "No overview available."
 
-                movie_items[item["Name"]] = {
+                movie_items[item["Id"]] = {
+                    "name": item["Name"],
                     "year":item["ProductionYear"],
                     "created_on":item["DateCreated"],
                     "description": tmdb_info["overview"],
@@ -157,6 +175,12 @@ def send_newsletter():
         items, total_count = JellyfinAPI.get_item_from_parent(parent_id=folder_id, type="tv", minimum_creation_date=dt.datetime.now() - dt.timedelta(days=configuration.conf.jellyfin.observed_period_days))
         total_tv += total_count
         for item in items:
+            if configuration.conf.jellyfin.ignore_item_added_before_last_newsletter:
+                last_newsletter_date = utils.get_last_newsletter_date()
+                if last_newsletter_date is not None:
+                    if item["DateCreated"] is not None and dt.datetime.strptime(item["DateCreated"].split("T")[0], "%Y-%m-%d") < last_newsletter_date:
+                        logging.info(f"ignore_item_added_before_last_newsletter is set to True and Item {item.get('Name')} was added before the last newsletter. Ignoring.")
+                        continue
             if item["Type"] == "Episode":
                 populate_series_item_from_episode(series_items, item)
     

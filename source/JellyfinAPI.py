@@ -44,15 +44,16 @@ def get_item_from_parent(parent_id, type, minimum_creation_date=None):
         return recent_items, response.json()["TotalRecordCount"]
 
 
-def get_item_from_parent_by_name(parent_id, name):
+
+def get_item_from_parent_by_id(parent_id, item_id):
     headers = {
         "Authorization": f'MediaBrowser Token="{conf.jellyfin.api_token}"'
     }
-    response = requests.get(f'{conf.jellyfin.url}/Items?ParentId={parent_id}&fields=DateCreated,ProviderIds&Recursive=true', headers=headers)
+    response = requests.get(f'{conf.jellyfin.url}/Items?ParentId={parent_id}&fields=DateCreated,ProviderIds&Recursive=true&ids={item_id}', headers=headers)
     if response.status_code != 200:
         logging.error(f"Error while getting the items from parent, status code: {response.status_code}.")
         raise Exception(f"Error while getting the items from parent, status code: {response.status_code}. Answer: {response.text}.")
     for item in response.json()["Items"]:
-        if "Name" in item.keys():
-            if item["Name"] == name:
+        if "Id" in item.keys():
+            if item["Id"] == item_id:
                 return item
