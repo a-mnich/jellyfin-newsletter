@@ -59,6 +59,12 @@ email_template:
     # Used in the footer
     jellyfin_owner_name: ""
 
+    # OPTIONAL : If the number of new items if greater than this number, all the summaries will be hidden
+    # Default: 10
+    # Always show summaries : set to 0
+    # Always hide summaries : set to -1
+    #display_overview_max_items: 10
+
 # SMTP server configuration, TLS is required for now
 # Check your email provider for more information
 email:

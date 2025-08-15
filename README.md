@@ -68,86 +68,8 @@ mkdir config
 ```
 curl -o config/config.yml https://raw.githubusercontent.com/SeaweedbrainCY/jellyfin-newsletter/refs/heads/main/config/config-example.yml
 ```
-5. Edit the `config/config.yml` file and fill in the required fields. **All fields are required.**
-```yaml
-scheduler:
-    # Crontab expression to send the newsletter. 
-    # Comment the scheduler section to disable the automatic sending of the newsletter. WARNING: IF COMMENTED, THE NEWSLETTER WILL BE RAN ONCE AT THE START OF THE CONTAINER.
-    # Test your crontab expression here: https://crontab.guru/
-    # This example will send the newsletter on the first day of every month at 8:00 AM
-    cron: "0 8 1 * *"
 
-jellyfin:
-    # URL of your jellyfin server
-    url: "" 
-
-    # API token of your jellyfin server, see requirements for more info
-    api_token: ""
-
-    # List of folders to watch for new movies 
-    # You can find them in your Jellyfin Dashboard -> Libraries -> Select a library -> Folder **ONLY ADD THE LAST FOLDER NAME, WITHOUT ANY '/'**
-    watched_film_folders:
-        - ""
-        # example for /media/movies folder add "movies"
-
-
-    # List of folders to watch for new shows
-    # You can find them in your Jellyfin Dashboard -> Libraries -> Select a library -> Folder **ONLY ADD THE LAST FOLDER NAME, WITHOUT ANY '/'**
-    watched_tv_folders:
-        - ""
-        # example for /media/tv folder add "tv"
-  
-  # Number of days to look back for new items
-  observed_period_days: 30
-
-  # (Optional, default: false)
-  # If true, the newsletter will ignore items that were added before the last newsletter was sent, even if they were added during the observed period.
-  # This is useful if you want to avoid sending the same items multiple times.
-  #ignore_item_added_before_last_newsletter: false
-
-tmdb:
-    # TMDB API key, see requirements for more info
-    api_key: ""
-
-# Email template to use for the newsletter
-# You can use placeholders to dynamically insert values. See available placeholders here : https://github.com/SeaweedbrainCY/jellyfin-newsletter/wiki/How-to-use-placeholder
-email_template:
-    # Language of the email, supported languages are "en" and "fr"
-    language: "en"
-    # Subject of the email
-    subject: ""
-    # Title of the email
-    title: ""
-    # Subtitle of the email
-    subtitle: ""
-    # Will be used to redirect the user to your Jellyfin instance
-    jellyfin_url: ""
-    # For the legal notice in the footer
-    unsubscribe_email: ""
-    # Used in the footer
-    jellyfin_owner_name: ""
-
-# SMTP server configuration, TLS is required for now
-# Check your email provider for more information
-email:
-    # Example: GMail: smtp.gmail.com
-    smtp_server: ""
-    # Usually 587
-    smtp_port: 
-    # The username of your SMTP account
-    smtp_username: ""
-    # The password of your SMTP account
-    smtp_password: ""
-    # Example: "jellyfin@example.com" or to set display username "Jellyfin <jellyfin@example.com>"
-    smtp_sender_email: ""
-    # TLS Type for the SMTP connection
-    smtp_tls_type: "STARTTLS" # "STARTTLS" or "TLS" (implicit TLS)
-
-# List of users to send the newsletter to
-recipients:
-  - ""
-  # Example: "name@example.com" or to set username "Name <name@example.com>"
-```
+5. Edit the `config/config.yml` file and fill in the required fields. **All non-commented fields are required.**
 
 6. Run the docker container with docker compose 
 ```bash
@@ -170,86 +92,9 @@ mkdir config
 ```
 curl -o config/config.yml https://raw.githubusercontent.com/SeaweedbrainCY/jellyfin-newsletter/refs/heads/main/config/config-example.yml
 ```
-2. Edit the `config/config.yml` file and fill in the required fields. **All fields are required.**
-```yaml
-#scheduler:
-    # Crontab expression to send the newsletter. 
-    # Comment the scheduler section to disable the automatic sending of the newsletter. WARNING: IF COMMENTED, THE NEWSLETTER WILL BE RAN ONCE AT THE START OF THE CONTAINER.
-    # Test your crontab expression here: https://crontab.guru/
-    # This example will send the newsletter on the first day of every month at 8:00 AM
-    #cron: "0 8 1 * *"
 
-jellyfin:
-    # URL of your jellyfin server
-    url: "" 
+2. Edit the `config/config.yml` file and fill in the required fields. **All non-commented fields are required.**
 
-    # API token of your jellyfin server, see requirements for more info
-    api_token: ""
-
-    # List of folders to watch for new movies 
-    # You can find them in your Jellyfin Dashboard -> Libraries -> Select a library -> Folder **ONLY ADD THE LAST FOLDER NAME, WITHOUT ANY '/'**
-    watched_film_folders:
-        - ""
-        # example for /media/movies folder add "movies"
-
-
-    # List of folders to watch for new shows
-    # You can find them in your Jellyfin Dashboard -> Libraries -> Select a library -> Folder **ONLY ADD THE LAST FOLDER NAME, WITHOUT ANY '/'**
-    watched_tv_folders:
-        - ""
-        # example for /media/tv folder add "tv"
-  
-  # Number of days to look back for new items
-  observed_period_days: 30
-
-  # (Optional, default: false)
-  # If true, the newsletter will ignore items that were added before the last newsletter was sent, even if they were added during the observed period.
-  # This is useful if you want to avoid sending the same items multiple times.
-  #ignore_item_added_before_last_newsletter: false
-
-tmdb:
-    # TMDB API key, see requirements for more info
-    api_key: ""
-
-# Email template to use for the newsletter
-# You can use placeholders to dynamically insert values. See available placeholders here : https://github.com/SeaweedbrainCY/jellyfin-newsletter/wiki/How-to-use-placeholder
-email_template:
-    # Language of the email, supported languages are "en" and "fr"
-    language: "en"
-    # Subject of the email
-    subject: ""
-    # Title of the email
-    title: ""
-    # Subtitle of the email
-    subtitle: ""
-    # Will be used to redirect the user to your Jellyfin instance
-    jellyfin_url: ""
-    # For the legal notice in the footer
-    unsubscribe_email: ""
-    # Used in the footer
-    jellyfin_owner_name: ""
-
-# SMTP server configuration, TLS is required for now
-# Check your email provider for more information
-email:
-    # Example: GMail: smtp.gmail.com
-    smtp_server: ""
-    # Usually 587
-    smtp_port: 
-    # The username of your SMTP account
-    smtp_username: ""
-    # The password of your SMTP account
-    smtp_password: ""
-    # Example: "jellyfin@example.com" or to set display username "Jellyfin <jellyfin@example.com>"
-    smtp_sender_email: ""
-    # TLS Type for the SMTP connection
-    smtp_tls_type: "STARTTLS" # "STARTTLS" or "TLS" (implicit TLS)
-
-# List of users to send the newsletter to
-recipients:
-  - ""
-  # Example: "name@example.com" or to set username "Name <name@example.com>"
-```
 
 3. Run the docker container to send the newsletter
 ```bash
