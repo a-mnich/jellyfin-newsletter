@@ -14,6 +14,7 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 COPY requirements.txt /app
+COPY VERSION /app
 
 RUN pip install --no-cache --upgrade pip setuptools
 
