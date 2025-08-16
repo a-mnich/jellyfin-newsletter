@@ -61,5 +61,7 @@ def get_media_detail_from_id(id, type):
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         logging.error(f"Error while getting media detail from id, status code: {response.status_code}.")
+        if response.status_code == 404:
+            return None
         raise Exception(f"Error while getting media detail from id, status code: {response.status_code}. Answer: {response.text}.")
     return response.json()
