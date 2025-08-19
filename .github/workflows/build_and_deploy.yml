@@ -54,9 +54,9 @@ jobs:
             context: .
             push: true
             tags: |
-              ghcr.io/${{ github.repository }}/jellyfin-newsletter:latest
-              ghcr.io/${{ github.repository }}/jellyfin-newsletter:${{ env.CURRENT_VERSION }}
-              ghcr.io/${{ github.repository }}/jellyfin-newsletter:${{ env.CURRENT_SHORT_VERSION }}
+              ghcr.io/${{ github.repository }}:latest
+              ghcr.io/${{ github.repository }}:${{ env.CURRENT_VERSION }}
+              ghcr.io/${{ github.repository }}:${{ env.CURRENT_SHORT_VERSION }}
             labels: |
               org.opencontainers.image.revision=${{ env.GIT_COMMIT }}
               org.opencontainers.image.created=${{ steps.meta.outputs.created }}
