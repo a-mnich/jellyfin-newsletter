@@ -22,17 +22,13 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v4
         
-        - name: Extract Git commit
+        - name: Extract en variables
           id: vars
           run: |
             echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
             echo "DATE=$(date)" >> $GITHUB_ENV
-
-        - name: Extract repository name 
-          id: vars 
-          # Lower case is required for GitHub Container Registry
-          run: |
             echo "REPOSITORY_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV 
+            
 
         - name: Set up Version file
           run: echo ${{ github.ref_name }} > VERSION
