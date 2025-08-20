@@ -78,11 +78,19 @@ def populate_series_item_with_series_related_information(series_items, watched_t
                         tmdb_id = item["ProviderIds"]["Tmdb"]
     
                 if tmdb_id is not None: # id provided by Jellyfin
-                    tmdb_info = TmdbAPI.get_media_detail_from_id(id=tmdb_id, type="tv")
-                else:
-                    logging.info(f"Item {item} has no TMDB id, searching by title.")
-                    tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["Name"], type="tv", year=item["ProductionYear"])
-                
+                    try:
+                        tmdb_info = TmdbAPI.get_media_detail_from_id(id=tmdb_id, type="tv")
+                    except Exception as e:
+                        logging.error(f"Item {item['Name']} could not be retrieved from TMDB by id due to an API error: {e}")     
+                        logging.info(f"Retrying search for item {item} by title.")
+
+                if tmdb_id is None or tmdb_info is None:
+                    logging.info(f"Item {item} has no TMDB id or search by id failed. Searching by title.")
+                    try:
+                        tmdb_info = TmdbAPI.get_media_detail_from_title(title=item["Name"], type="tv", year=item["ProductionYear"])
+                    except Exception as e:
+                        logging.error(f"Item {item['Name']} could not be retrieved from TMDB by title due to an API error: {e}")   
+                                       
                 if tmdb_info is None:
                     logging.warning(f"Item {item['Name']} has not been found on TMDB. Skipping.")
                 else:
