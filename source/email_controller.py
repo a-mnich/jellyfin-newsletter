@@ -1,6 +1,6 @@
 from source import configuration
 from source import context
-from source.preview_handler import PreviewHandler
+from source.dry_run_handler import DryRunHandler
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -12,7 +12,7 @@ import datetime as dt
 
 def send_newsletter(html_content, movies=None, series=None, total_tv=0, total_movie=0):
     """
-    Send newsletter or generate preview based on configuration
+    Send newsletter or generate dry-run output based on configuration
     
     Args:
         html_content (str): Generated HTML email content
@@ -24,20 +24,20 @@ def send_newsletter(html_content, movies=None, series=None, total_tv=0, total_mo
     Returns:
         dict: Result information
     """
-    # Check if preview mode is enabled
-    if configuration.conf.preview.enabled:
-        return _handle_preview_mode(html_content, movies or {}, series or {}, total_tv, total_movie)
+    # Check if dry-run mode is enabled
+    if configuration.conf.dry_run.enabled:
+        return _handle_dry_run_mode(html_content, movies or {}, series or {}, total_tv, total_movie)
     else:
         return _send_normal_email(html_content)
 
 
-def _handle_preview_mode(html_content, movies, series, total_tv, total_movie):
-    """Handle preview or dry-run mode"""
-    preview_handler = PreviewHandler()
+def _handle_dry_run_mode(html_content, movies, series, total_tv, total_movie):
+    """Handle dry-run mode"""
+    dry_run_handler = DryRunHandler()
     
-    if configuration.conf.preview.test_smtp_connection:
-        # Dry-run mode: test SMTP + save preview
-        mode = "dry-run"
+    if configuration.conf.dry_run.test_smtp_connection:
+        # Dry-run mode: test SMTP + save output
+        mode = "dry-run-smtp-only"
         smtp_tested = False
         
         try:
@@ -48,24 +48,24 @@ def _handle_preview_mode(html_content, movies, series, total_tv, total_movie):
             logging.error(f"SMTP connection test: FAILED - {e}")
             
         # Generate metadata with SMTP test result
-        metadata = preview_handler.get_metadata(movies, series, total_tv, total_movie, mode, smtp_tested)
+        metadata = dry_run_handler.get_metadata(movies, series, total_tv, total_movie, mode, smtp_tested)
         
         # Calculate email size
         metadata['stats']['total_email_size_kb'] = round(len(html_content.encode('utf-8')) / 1024, 1)
         
-        # Save preview files
-        html_file, json_file = preview_handler.save_preview(html_content, metadata, mode)
+        # Save dry-run files
+        html_file, json_file = dry_run_handler.save_dry_run_output(html_content, metadata, mode)
         
         # Log dry-run results
         logging.info("DRY-RUN MODE RESULTS:")
         logging.info(f"Would send to: {', '.join(configuration.conf.recipients)}")
         logging.info(f"Email size: {metadata['stats']['total_email_size_kb']}KB")
-        logging.info(f"Preview saved: {html_file}")
+        logging.info(f"Dry-run output saved: {html_file}")
         if json_file:
             logging.info(f"Metadata saved: {json_file}")
         
         return {
-            "mode": "dry-run",
+            "mode": mode,
             "smtp_tested": smtp_tested,
             "html_file": html_file,
             "json_file": json_file,
@@ -74,28 +74,28 @@ def _handle_preview_mode(html_content, movies, series, total_tv, total_movie):
         }
         
     else:
-        # Preview-only mode: skip SMTP entirely
-        mode = "preview"
+        # Dry-run only mode: skip SMTP entirely
+        mode = "dry-run"
         
         # Generate metadata
-        metadata = preview_handler.get_metadata(movies, series, total_tv, total_movie, mode, False)
+        metadata = dry_run_handler.get_metadata(movies, series, total_tv, total_movie, mode, False)
         
         # Calculate email size
         metadata['stats']['total_email_size_kb'] = round(len(html_content.encode('utf-8')) / 1024, 1)
         
-        # Save preview files
-        html_file, json_file = preview_handler.save_preview(html_content, metadata, mode)
+        # Save dry-run files
+        html_file, json_file = dry_run_handler.save_dry_run_output(html_content, metadata, mode)
         
-        # Log preview results
-        logging.info("PREVIEW MODE RESULTS:")
+        # Log dry-run results
+        logging.info("DRY-RUN MODE RESULTS:")
         logging.info(f"Email size: {metadata['stats']['total_email_size_kb']}KB")
-        logging.info(f"Preview saved: {html_file}")
+        logging.info(f"Dry-run output saved: {html_file}")
         if json_file:
             logging.info(f"Metadata saved: {json_file}")
-        logging.info("SMTP testing skipped (preview-only mode)")
+        logging.info("SMTP testing skipped (dry-run only mode)")
         
         return {
-            "mode": "preview",
+            "mode": mode,
             "smtp_tested": False,
             "html_file": html_file,
             "json_file": json_file,

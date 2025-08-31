@@ -79,7 +79,7 @@ class Email:
         self.smtp_tls_type = data.get("smtp_tls_type") or "STARTTLS" # Fallback to STARTTLS if not specified
 
 
-class PreviewConfig:
+class DryRunConfig:
     def __init__(self, data):
         self.enabled = data.get("enabled", False)
         self.test_smtp_connection = data.get("test_smtp_connection", False)
@@ -112,7 +112,7 @@ class Config:
         self.email = Email(data["email"]) 
         self.recipients = data["recipients"]
         self.scheduler = Scheduler(data["scheduler"]) if "scheduler" in data else Scheduler([])
-        self.preview = PreviewConfig(data.get("preview", {}))
+        self.dry_run = DryRunConfig(data.get("dry-run", {}))
     
     
 

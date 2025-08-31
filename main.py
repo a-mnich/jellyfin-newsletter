@@ -198,7 +198,7 @@ def send_newsletter():
     if len(movie_items) + len(series_items) > 0:
         template = email_template.populate_email_template(movies=movie_items, series=series_items, total_tv=total_tv, total_movie=total_movie)
 
-        # Use the new send_newsletter function with preview/dry-run support
+        # Use the new send_newsletter function with dry-run support
         result = email_controller.send_newsletter(
             html_content=template,
             movies=movie_items,
@@ -210,9 +210,9 @@ def send_newsletter():
         # Log results based on mode
         if result["mode"] == "normal":
             logging.info(f"All emails sent successfully to {result['sent_count']} recipients.")
-        elif result["mode"] == "preview":
-            logging.info(f"Preview generated successfully (preview-only mode).")
         elif result["mode"] == "dry-run":
+            logging.info(f"Dry-run completed successfully (dry-run only mode).")
+        elif result["mode"] == "dry-run-smtp-only":
             smtp_status = "PASSED" if result["smtp_tested"] else "FAILED"
             logging.info(f"Dry-run completed. SMTP test: {smtp_status}")
         
