@@ -157,8 +157,12 @@ def _send_normal_email(html_content):
         sent_count += 1
         sleep(2)
     smtp_server.quit()
-    save_last_newsletter_date(dt.datetime.now())
-    
+
+    if not configuration.conf.dry_run.enabled:
+      save_last_newsletter_date(dt.datetime.now())
+    else:
+      logging.info("Dry run enabled - not saving last newsletter date")
+
     return {
         "mode": "normal",
         "sent_count": sent_count,
