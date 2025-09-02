@@ -1,5 +1,6 @@
 import yaml
 import logging
+import os
 
 
 
@@ -81,7 +82,7 @@ class Email:
 
 class DryRunConfig:
     def __init__(self, data):
-        self.enabled = data.get("enabled", False)
+        self.enabled = data.get("enabled", False) or os.environ.get("DRY_RUN", "false").lower() == "true"
         self.test_smtp_connection = data.get("test_smtp_connection", False)
         self.output_directory = data.get("output_directory", "./previews/")
         self.output_filename = data.get("output_filename", "newsletter_{date}_{time}.html")
